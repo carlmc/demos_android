@@ -2,7 +2,9 @@ package com.example.cmunayll.prueba2tablayout.fragments;
 
 import android.app.VoiceInteractor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,6 +38,7 @@ public class TarjetaFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
+    private SwipeRefreshLayout swipe;
     private List<Tarjeta> tarjetas;
     private TarjetaAdapter adapter;
 
@@ -50,6 +53,8 @@ public class TarjetaFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         layoutManager = new LinearLayoutManager(getActivity());
         //adapter = new TarjetaAdapter(tarjetas, R.layout.rv_tarjetas);
+
+        swipe = view.findViewById(R.id.swiperefresh);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
@@ -74,6 +79,21 @@ public class TarjetaFragment extends Fragment {
         });
 
         requestQueue.add(request);
+
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipe.setRefreshing(true);
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipe.setRefreshing(false);
+                    }
+                }, 3000);
+            }
+        });
+
+        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
 
         return view;
     }
