@@ -41,6 +41,9 @@ public class TarjetaFragment extends Fragment {
     private SwipeRefreshLayout swipe;
     private List<Tarjeta> tarjetas;
     private TarjetaAdapter adapter;
+    private RequestQueue requestQueue;
+
+    private String url = "http://192.168.8.102/Volley/CardList.php";
 
     public TarjetaFragment() {
 
@@ -52,16 +55,37 @@ public class TarjetaFragment extends Fragment {
         //tarjetas = this.getAllAccounts();
         recyclerView = view.findViewById(R.id.recyclerView);
         layoutManager = new LinearLayoutManager(getActivity());
-        //adapter = new TarjetaAdapter(tarjetas, R.layout.rv_tarjetas);
 
         swipe = view.findViewById(R.id.swiperefresh);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        //recyclerView.setAdapter(adapter);
 
-        RequestQueue requestQueue = Volley.newRequestQueue(container.getContext());
-        String url = "http://192.168.8.102/Volley/CardList.php";
+        tarjetas = new ArrayList<>();
+        adapter = new TarjetaAdapter(tarjetas, R.layout.rv_tarjetas);
+        recyclerView.setAdapter(adapter);
+
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipe.setRefreshing(true);
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipe.setRefreshing(false);
+                    }
+                }, 3000);
+                llenaVolley();
+            }
+        });
+
+        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+
+        return view;
+    }
+
+    private void llenaVolley() {
+        requestQueue = Volley.newRequestQueue(getActivity());
         StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -79,23 +103,6 @@ public class TarjetaFragment extends Fragment {
         });
 
         requestQueue.add(request);
-
-        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipe.setRefreshing(true);
-                (new Handler()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipe.setRefreshing(false);
-                    }
-                }, 3000);
-            }
-        });
-
-        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
-
-        return view;
     }
 
 

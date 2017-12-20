@@ -22,6 +22,7 @@ import com.example.cmunayll.prueba2tablayout.models.Cuenta;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,6 +38,9 @@ public class CuentaFragment extends Fragment {
     private SwipeRefreshLayout swipe;
     private List<Cuenta> cuentas;
     private CuentaAdapter adapter;
+    private RequestQueue requestQueue;
+
+    private String url = "http://192.168.8.102/Volley/AccountList.php";
 
     public CuentaFragment() {
 
@@ -54,8 +58,33 @@ public class CuentaFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String url = "http://192.168.8.102/Volley/AccountList.php";
+        cuentas = new ArrayList<>();
+        adapter = new CuentaAdapter(cuentas, R.layout.rv_cuentas);
+        recyclerView.setAdapter(adapter);
+
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipe.setRefreshing(true);
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipe.setRefreshing(false);
+                    }
+                }, 2000);
+                llenarVolley();
+            }
+        });
+
+        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+
+        //cuentas = this.getAllAccounts();
+
+        return view;
+    }
+
+    private void llenarVolley() {
+        requestQueue = Volley.newRequestQueue(getActivity());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -72,25 +101,6 @@ public class CuentaFragment extends Fragment {
             }
         });
         requestQueue.add(stringRequest);
-
-        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipe.setRefreshing(true);
-                (new Handler()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipe.setRefreshing(false);
-                    }
-                }, 3000);
-            }
-        });
-
-        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
-
-        //cuentas = this.getAllAccounts();
-
-        return view;
     }
 
 
