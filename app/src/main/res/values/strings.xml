@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Prueba2TabLayout</string>
+    
+    <string-array name="tipo">
+        <item>Cuentas de Ahorro</item>
+        <item>Cuentas de Ahorro</item>
+        <item>Depósito A Plazo</item>
+        <item>Cuenta Mm</item>
+        <item>Depósito a Plazo</item>
+        <item>Cuentas de Ahorro</item>
+        <item>Depósito a Plazo</item>
+    </string-array>
+
+    <string-array name="numero">
+        <item>193&#8211;11295209&#8211;1&#8211;01</item>
+        <item>193&#8211;11295454209&#8211;1&#8211;01</item>
+        <item>193&#8211;11295209&#8211;1&#8211;1</item>
+        <item>193&#8211;1145454545295209&#8211;1&#8211;01</item>
+        <item>193&#8211;11295209&#8211;1&#8211;01</item>
+        <item>193&#8211;11232209&#8211;1&#8211;01</item>
+        <item>193&#8211;11295209&#8211;1&#8211;01</item>
+    </string-array>
+
+</resources>
