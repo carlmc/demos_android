@@ -18,13 +18,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.cmunayll.prueba2tablayout.R;
 import com.example.cmunayll.prueba2tablayout.adapters.CreditoAdapter;
-import com.example.cmunayll.prueba2tablayout.adapters.TarjetaAdapter;
 import com.example.cmunayll.prueba2tablayout.models.Credito;
-import com.example.cmunayll.prueba2tablayout.models.Tarjeta;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
