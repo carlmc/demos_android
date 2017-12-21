@@ -1,5 +1,6 @@
 package com.example.cmunayll.prueba2tablayout.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.cmunayll.prueba2tablayout.MiIntentService;
 import com.example.cmunayll.prueba2tablayout.R;
 import com.example.cmunayll.prueba2tablayout.adapters.CuentaAdapter;
 import com.example.cmunayll.prueba2tablayout.models.Cuenta;
@@ -43,7 +45,7 @@ public class CuentaFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.recyclerview_fragment, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -83,6 +85,9 @@ public class CuentaFragment extends Fragment {
                         swipe.setRefreshing(false);
                     }
                 }, 3000);
+                Intent intent = new Intent(getActivity(), MiIntentService.class);
+                intent.setAction("com.example.cmunayll.prueba2tablayout.action.RUN_INTENT_SERVICE");
+                //startService(intent);
             }
         });
 
@@ -92,6 +97,7 @@ public class CuentaFragment extends Fragment {
 
         return view;
     }
+
 
 
     /*private List<Cuenta> getAllAccounts() {
