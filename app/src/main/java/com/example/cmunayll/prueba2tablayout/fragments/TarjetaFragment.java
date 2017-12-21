@@ -1,6 +1,5 @@
 package com.example.cmunayll.prueba2tablayout.fragments;
 
-import android.app.VoiceInteractor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -18,9 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.cmunayll.prueba2tablayout.R;
-import com.example.cmunayll.prueba2tablayout.adapters.CuentaAdapter;
 import com.example.cmunayll.prueba2tablayout.adapters.TarjetaAdapter;
-import com.example.cmunayll.prueba2tablayout.models.Cuenta;
 import com.example.cmunayll.prueba2tablayout.models.Tarjeta;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -74,12 +71,12 @@ public class TarjetaFragment extends Fragment {
                     public void run() {
                         swipe.setRefreshing(false);
                     }
-                }, 3000);
+                }, 2000);
                 llenaVolley();
             }
         });
 
-        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light);
 
         return view;
     }

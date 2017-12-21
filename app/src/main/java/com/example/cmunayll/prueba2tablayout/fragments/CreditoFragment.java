@@ -18,9 +18,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.cmunayll.prueba2tablayout.R;
 import com.example.cmunayll.prueba2tablayout.adapters.CreditoAdapter;
-import com.example.cmunayll.prueba2tablayout.adapters.TarjetaAdapter;
 import com.example.cmunayll.prueba2tablayout.models.Credito;
-import com.example.cmunayll.prueba2tablayout.models.Tarjeta;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -40,6 +38,9 @@ public class CreditoFragment extends Fragment {
     private SwipeRefreshLayout swipe;
     private List<Credito> creditos;
     private CreditoAdapter adapter;
+    private RequestQueue requestQueue;
+
+    private String url = "http://192.168.8.102/Volley/CardList.php";
 
     public CreditoFragment() {
 
@@ -57,10 +58,32 @@ public class CreditoFragment extends Fragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        //recyclerView.setAdapter(adapter);
 
-        RequestQueue requestQueue = Volley.newRequestQueue(container.getContext());
-        String url = "http://192.168.8.102/Volley/CredproductList.php";
+        creditos = new ArrayList<>();
+        adapter = new CreditoAdapter(creditos, R.layout.rv_creditos);
+        recyclerView.setAdapter(adapter);
+
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipe.setRefreshing(true);
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipe.setRefreshing(false);
+                    }
+                }, 2000);
+                bindVolley();
+            }
+        });
+
+        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light);
+
+        return view;
+    }
+
+    private void bindVolley() {
+        requestQueue = Volley.newRequestQueue(getActivity());
         StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -78,25 +101,7 @@ public class CreditoFragment extends Fragment {
         });
 
         requestQueue.add(request);
-
-        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipe.setRefreshing(true);
-                (new Handler()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipe.setRefreshing(false);
-                    }
-                }, 3000);
-            }
-        });
-
-        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
-
-        return view;
     }
-
 
     /*private List<Credito> getAllAccounts() {
         return new ArrayList<Credito>() {
