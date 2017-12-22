@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.example.cmunayll.prueba2tablayout.R;
 import com.example.cmunayll.prueba2tablayout.models.Cuenta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,10 +18,10 @@ import java.util.List;
 
 public class CuentaAdapter extends RecyclerView.Adapter<CuentaAdapter.ViewHolder> {
 
-    private List<Cuenta> cuentas;
+    private ArrayList<Cuenta> cuentas;
     private int layout;
 
-    public CuentaAdapter(List<Cuenta> cuentas, int layout) {
+    public CuentaAdapter(ArrayList<Cuenta> cuentas, int layout) {
         this.cuentas = cuentas;
         this.layout = layout;
 
@@ -62,9 +63,9 @@ public class CuentaAdapter extends RecyclerView.Adapter<CuentaAdapter.ViewHolder
         }
 
         public void bind(final Cuenta cuenta) {
-            this.tvTipoCuenta.setText(cuenta.getTipo_cuenta());
-            this.tvNumCuenta.setText(cuenta.getNum_cuenta());
-            this.tvMonto.setText("S/ " + String.valueOf(cuenta.getCantidad()));
+            this.tvTipoCuenta.setText(cuenta.getDescription());
+            this.tvNumCuenta.setText(cuenta.getNumberFormatted());
+            this.tvMonto.setText("S/ " + String.valueOf(cuenta.getAmount()));
         }
     }
 }

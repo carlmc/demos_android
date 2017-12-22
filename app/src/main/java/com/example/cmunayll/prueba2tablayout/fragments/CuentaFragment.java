@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +17,22 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.cmunayll.prueba2tablayout.CuentaInterface;
+import com.example.cmunayll.prueba2tablayout.JSONResponse;
 import com.example.cmunayll.prueba2tablayout.R;
 import com.example.cmunayll.prueba2tablayout.adapters.CuentaAdapter;
 import com.example.cmunayll.prueba2tablayout.models.Cuenta;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by cmunayll on 13/12/2017.
@@ -35,7 +44,7 @@ public class CuentaFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private SwipeRefreshLayout swipe;
-    private List<Cuenta> cuentas;
+    private ArrayList<Cuenta> cuentas;
     private CuentaAdapter adapter;
 
     public CuentaFragment() {
@@ -54,7 +63,7 @@ public class CuentaFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        /*RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         String url = "http://192.168.8.102/Volley/AccountList.php";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -71,7 +80,25 @@ public class CuentaFragment extends Fragment {
 
             }
         });
-        requestQueue.add(stringRequest);
+        requestQueue.add(stringRequest);*/
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://192.168.8.102").addConverterFactory(GsonConverterFactory.create()).build();
+        CuentaInterface requestInterface = retrofit.create(CuentaInterface.class);
+        Call<JSONResponse> call = requestInterface.getJSON();
+        call.enqueue(new Callback<JSONResponse>() {
+            @Override
+            public void onResponse(Call<JSONResponse> call, retrofit2.Response<JSONResponse> response) {
+                JSONResponse jsonResponse = response.body();
+                cuentas = new ArrayList<>(Arrays.asList(jsonResponse.getCuenta()));
+                adapter = new CuentaAdapter(cuentas, R.layout.rv_cuentas);
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<JSONResponse> call, Throwable t) {
+                Log.d("Error", t.getMessage());
+            }
+        });
 
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -86,7 +113,7 @@ public class CuentaFragment extends Fragment {
             }
         });
 
-        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light);
 
         //cuentas = this.getAllAccounts();
 
