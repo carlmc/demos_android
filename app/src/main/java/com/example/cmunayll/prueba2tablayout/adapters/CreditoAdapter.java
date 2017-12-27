@@ -62,12 +62,12 @@ public class CreditoAdapter extends RecyclerView.Adapter<CreditoAdapter.ViewHold
         }
 
         public void bind(final Credito credito) {
-            this.tvTarjeta.setText(credito.getTarjetaCred());
-            this.tvNumero.setText(credito.getNumeroCred());
-            this.tvHayCred.setText("Has Pagado S/ "+String.valueOf(credito.getHayCred()));
-            this.tvMontoTotal.setText("S/ "+String.valueOf(credito.getMonto_totalCred()));
-            this.progressBarCred.setMax(credito.getMonto_totalCred());
-            this.progressBarCred.setProgress(credito.getHayCred().intValue());
+            this.tvTarjeta.setText(credito.getDescription());
+            this.tvNumero.setText(credito.getNumberFormatted());
+            this.tvHayCred.setText("Has Pagado S/ "+String.valueOf(credito.getAmountAvailable()));
+            this.tvMontoTotal.setText("S/ "+String.valueOf(credito.getLimit()));
+            this.progressBarCred.setMax(credito.getLimit());
+            this.progressBarCred.setProgress(credito.getAmountAvailable().intValue());
         }
     }
 }

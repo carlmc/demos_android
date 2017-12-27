@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,10 @@ import com.android.volley.toolbox.Volley;
 import com.example.cmunayll.prueba2tablayout.R;
 import com.example.cmunayll.prueba2tablayout.adapters.CreditoAdapter;
 import com.example.cmunayll.prueba2tablayout.adapters.TarjetaAdapter;
+import com.example.cmunayll.prueba2tablayout.interfaces.CreditoInterface;
+import com.example.cmunayll.prueba2tablayout.interfaces.TarjetaInterface;
+import com.example.cmunayll.prueba2tablayout.jsons.JSONCredito;
+import com.example.cmunayll.prueba2tablayout.jsons.JSONTarjeta;
 import com.example.cmunayll.prueba2tablayout.models.Credito;
 import com.example.cmunayll.prueba2tablayout.models.Tarjeta;
 import com.google.gson.Gson;
@@ -27,6 +32,11 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by cmunayll on 13/12/2017.
@@ -38,7 +48,7 @@ public class CreditoFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private SwipeRefreshLayout swipe;
-    private List<Credito> creditos;
+    private ArrayList<Credito> creditos;
     private CreditoAdapter adapter;
 
     public CreditoFragment() {
@@ -59,7 +69,7 @@ public class CreditoFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         //recyclerView.setAdapter(adapter);
 
-        RequestQueue requestQueue = Volley.newRequestQueue(container.getContext());
+        /*RequestQueue requestQueue = Volley.newRequestQueue(container.getContext());
         String url = "http://192.168.8.102/Volley/CredproductList.php";
         StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -77,7 +87,25 @@ public class CreditoFragment extends Fragment {
             }
         });
 
-        requestQueue.add(request);
+        requestQueue.add(request);*/
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://192.168.8.102").addConverterFactory(GsonConverterFactory.create()).build();
+        CreditoInterface requestInterface = retrofit.create(CreditoInterface.class);
+        Call<JSONCredito> call = requestInterface.getJSON();
+        call.enqueue(new Callback<JSONCredito>() {
+            @Override
+            public void onResponse(Call<JSONCredito> call, retrofit2.Response<JSONCredito> response) {
+                JSONCredito jsonResponse = response.body();
+                creditos = new ArrayList<>(Arrays.asList(jsonResponse.getCredito()));
+                adapter = new CreditoAdapter(creditos, R.layout.rv_creditos);
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<JSONCredito> call, Throwable t) {
+                Log.d("Error", t.getMessage());
+            }
+        });
 
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -97,6 +125,11 @@ public class CreditoFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        
+    }
 
     /*private List<Credito> getAllAccounts() {
         return new ArrayList<Credito>() {

@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,10 @@ import com.android.volley.toolbox.Volley;
 import com.example.cmunayll.prueba2tablayout.R;
 import com.example.cmunayll.prueba2tablayout.adapters.CuentaAdapter;
 import com.example.cmunayll.prueba2tablayout.adapters.TarjetaAdapter;
+import com.example.cmunayll.prueba2tablayout.interfaces.CuentaInterface;
+import com.example.cmunayll.prueba2tablayout.interfaces.TarjetaInterface;
+import com.example.cmunayll.prueba2tablayout.jsons.JSONCuenta;
+import com.example.cmunayll.prueba2tablayout.jsons.JSONTarjeta;
 import com.example.cmunayll.prueba2tablayout.models.Cuenta;
 import com.example.cmunayll.prueba2tablayout.models.Tarjeta;
 import com.google.gson.Gson;
@@ -28,6 +33,11 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by cmunayll on 13/12/2017.
@@ -39,7 +49,7 @@ public class TarjetaFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private SwipeRefreshLayout swipe;
-    private List<Tarjeta> tarjetas;
+    private ArrayList<Tarjeta> tarjetas;
     private TarjetaAdapter adapter;
 
     public TarjetaFragment() {
@@ -60,7 +70,7 @@ public class TarjetaFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         //recyclerView.setAdapter(adapter);
 
-        RequestQueue requestQueue = Volley.newRequestQueue(container.getContext());
+        /*RequestQueue requestQueue = Volley.newRequestQueue(container.getContext());
         String url = "http://192.168.8.102/Volley/CardList.php";
         StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -78,7 +88,25 @@ public class TarjetaFragment extends Fragment {
             }
         });
 
-        requestQueue.add(request);
+        requestQueue.add(request);*/
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://192.168.8.102").addConverterFactory(GsonConverterFactory.create()).build();
+        TarjetaInterface requestInterface = retrofit.create(TarjetaInterface.class);
+        Call<JSONTarjeta> call = requestInterface.getJSON();
+        call.enqueue(new Callback<JSONTarjeta>() {
+            @Override
+            public void onResponse(Call<JSONTarjeta> call, retrofit2.Response<JSONTarjeta> response) {
+                JSONTarjeta jsonResponse = response.body();
+                tarjetas = new ArrayList<>(Arrays.asList(jsonResponse.getTarjeta()));
+                adapter = new TarjetaAdapter(tarjetas, R.layout.rv_tarjetas);
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<JSONTarjeta> call, Throwable t) {
+                Log.d("Error", t.getMessage());
+            }
+        });
 
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

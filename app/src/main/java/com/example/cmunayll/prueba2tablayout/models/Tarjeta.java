@@ -8,36 +8,35 @@ import com.google.gson.annotations.SerializedName;
 
 public class Tarjeta {
 
-    @SerializedName("description")
-    private String tarjeta;
-    @SerializedName("numberFormatted")
-    private String numero;
-    @SerializedName("amountAvailable")
-    private Double hay;
-    @SerializedName("limit")
-    private Integer monto_total;
+    //@SerializedName("description")
+    private String description;
+    //@SerializedName("numberFormatted")
+    private String numberFormatted;
+    //@SerializedName("amountAvailable")
+    private Double amountAvailable;
+    //@SerializedName("limit")
+    private Integer limit;
 
     public Tarjeta(String tarjeta, String numero, Double hay, Integer monto_total) {
-        this.tarjeta = tarjeta;
-        this.numero = numero;
-        this.hay = hay;
-        this.monto_total = monto_total;
+        this.description = tarjeta;
+        this.numberFormatted = numero;
+        this.amountAvailable = hay;
+        this.limit = monto_total;
     }
 
-    public String getTarjeta() {
-        return tarjeta;
+    public String getDescription() {
+        return description;
     }
 
-    public String getNumero() {
-        return numero;
+    public String getNumberFormatted() {
+        return numberFormatted;
     }
 
-    public Double getHay() {
-        return hay;
+    public Double getAmountAvailable() {
+        return amountAvailable;
     }
 
-    public Integer getMonto_total() {
-        return monto_total;
+    public Integer getLimit() {
+        return limit;
     }
-
 }

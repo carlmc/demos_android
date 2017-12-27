@@ -1,4 +1,4 @@
-package com.example.cmunayll.prueba2tablayout;
+package com.example.cmunayll.prueba2tablayout.jsons;
 
 import com.example.cmunayll.prueba2tablayout.models.Cuenta;
 
@@ -6,11 +6,11 @@ import com.example.cmunayll.prueba2tablayout.models.Cuenta;
  * Created by cmunayll on 22/12/2017.
  */
 
-public class JSONResponse {
+public class JSONCuenta {
 
-    private Cuenta[] cuenta;
+    private Cuenta[] cuentas;
 
     public Cuenta[] getCuenta() {
-        return cuenta;
+        return cuentas;
     }
 }

@@ -11,23 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.cmunayll.prueba2tablayout.CuentaInterface;
-import com.example.cmunayll.prueba2tablayout.JSONResponse;
+import com.example.cmunayll.prueba2tablayout.interfaces.CuentaInterface;
+import com.example.cmunayll.prueba2tablayout.jsons.JSONCuenta;
 import com.example.cmunayll.prueba2tablayout.R;
 import com.example.cmunayll.prueba2tablayout.adapters.CuentaAdapter;
 import com.example.cmunayll.prueba2tablayout.models.Cuenta;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -84,18 +75,18 @@ public class CuentaFragment extends Fragment {
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://192.168.8.102").addConverterFactory(GsonConverterFactory.create()).build();
         CuentaInterface requestInterface = retrofit.create(CuentaInterface.class);
-        Call<JSONResponse> call = requestInterface.getJSON();
-        call.enqueue(new Callback<JSONResponse>() {
+        Call<JSONCuenta> call = requestInterface.getJSON();
+        call.enqueue(new Callback<JSONCuenta>() {
             @Override
-            public void onResponse(Call<JSONResponse> call, retrofit2.Response<JSONResponse> response) {
-                JSONResponse jsonResponse = response.body();
+            public void onResponse(Call<JSONCuenta> call, retrofit2.Response<JSONCuenta> response) {
+                JSONCuenta jsonResponse = response.body();
                 cuentas = new ArrayList<>(Arrays.asList(jsonResponse.getCuenta()));
                 adapter = new CuentaAdapter(cuentas, R.layout.rv_cuentas);
                 recyclerView.setAdapter(adapter);
             }
 
             @Override
-            public void onFailure(Call<JSONResponse> call, Throwable t) {
+            public void onFailure(Call<JSONCuenta> call, Throwable t) {
                 Log.d("Error", t.getMessage());
             }
         });

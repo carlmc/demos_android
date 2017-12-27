@@ -8,35 +8,34 @@ import com.google.gson.annotations.SerializedName;
 
 public class Credito {
 
-    @SerializedName("description")
-    private String tarjetaCred;
-    @SerializedName("numberFormatted")
-    private String numeroCred;
-    @SerializedName("amountAvailable")
-    private Double hayCred;
-    @SerializedName("limit")
-    private Integer monto_totalCred;
+    //@SerializedName("description")
+    private String description;
+    //@SerializedName("numberFormatted")
+    private String numberFormatted;
+    //@SerializedName("amountAvailable")
+    private Double amountAvailable;
+    //@SerializedName("limit")
+    private Integer limit;
 
     public Credito(String tarjetaCred, String numeroCred, Integer monto_totalCred) {
-        this.tarjetaCred = tarjetaCred;
-        this.numeroCred = numeroCred;
-        this.monto_totalCred = monto_totalCred;
+        this.description = tarjetaCred;
+        this.numberFormatted = numeroCred;
+        this.limit = monto_totalCred;
     }
 
-    public String getTarjetaCred() {
-        return tarjetaCred;
+    public String getDescription() {
+        return description;
     }
 
-    public String getNumeroCred() {
-        return numeroCred;
+    public String getNumberFormatted() {
+        return numberFormatted;
     }
 
-    public Double getHayCred() {
-        return hayCred;
+    public Double getAmountAvailable() {
+        return amountAvailable;
     }
 
-    public Integer getMonto_totalCred() {
-        return monto_totalCred;
+    public Integer getLimit() {
+        return limit;
     }
-
 }

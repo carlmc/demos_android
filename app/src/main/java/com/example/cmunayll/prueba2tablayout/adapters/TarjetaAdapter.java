@@ -62,12 +62,12 @@ public class TarjetaAdapter extends RecyclerView.Adapter<TarjetaAdapter.ViewHold
         }
 
         public void bind(final Tarjeta tarjeta) {
-            this.tvTarjeta.setText(tarjeta.getTarjeta());
-            this.tvNumero.setText(tarjeta.getNumero());
-            this.tvHay.setText("S/ "+String.valueOf(tarjeta.getHay()));
-            this.tvMontoTotal.setText("S/ "+String.valueOf(tarjeta.getMonto_total()));
-            this.progressBar.setMax(tarjeta.getMonto_total());
-            this.progressBar.setProgress(tarjeta.getHay().intValue());
+            this.tvTarjeta.setText(tarjeta.getDescription());
+            this.tvNumero.setText(tarjeta.getNumberFormatted());
+            this.tvHay.setText("S/ "+String.valueOf(tarjeta.getAmountAvailable()));
+            this.tvMontoTotal.setText("S/ "+String.valueOf(tarjeta.getLimit()));
+            this.progressBar.setMax(tarjeta.getLimit());
+            this.progressBar.setProgress(tarjeta.getAmountAvailable().intValue());
 
 
         }
