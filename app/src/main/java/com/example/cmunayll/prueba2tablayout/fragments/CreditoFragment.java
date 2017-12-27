@@ -125,11 +125,6 @@ public class CreditoFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        
-    }
 
     /*private List<Credito> getAllAccounts() {
         return new ArrayList<Credito>() {
