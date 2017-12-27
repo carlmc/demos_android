@@ -1,0 +1,43 @@
+{
+  "project_info": {
+    "project_number": "373404604191",
+    "project_id": "analytics-20bf3"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:373404604191:android:53f07d51c18743a5",
+        "android_client_info": {
+          "package_name": "com.example.cmunayll.prueba2tablayout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "373404604191-pan3qunfg0632bv67pj10ap055tjhhba.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsPtoW-HAvxiNmyGEi3g0uFjBywfnjtMk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-111675132-1"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
