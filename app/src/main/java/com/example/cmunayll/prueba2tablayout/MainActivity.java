@@ -54,9 +54,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
+                //Tracker t = ((AnalyticsApplication) getApplication()).getDefaultTracker();
                 Log.i(TAG, "Setting screen name: "+name);
-                mTracker.setScreenName(name);
-                mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+                mTracker.send(new HitBuilders.EventBuilder().setCategory("Action").setAction("Share").build());
+                //mTracker.setScreenName(name);
+                //mTracker.send(new HitBuilders.ScreenViewBuilder().build());
             }
 
             @Override
@@ -69,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     @Override

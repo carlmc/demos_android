@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +18,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.cmunayll.prueba2tablayout.AnalyticsApplication;
 import com.example.cmunayll.prueba2tablayout.R;
 import com.example.cmunayll.prueba2tablayout.adapters.CuentaAdapter;
 import com.example.cmunayll.prueba2tablayout.adapters.TarjetaAdapter;
 import com.example.cmunayll.prueba2tablayout.models.Cuenta;
 import com.example.cmunayll.prueba2tablayout.models.Tarjeta;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -42,6 +46,10 @@ public class TarjetaFragment extends Fragment {
     private List<Tarjeta> tarjetas;
     private TarjetaAdapter adapter;
 
+    private Tracker mTracker;
+    private static final String TAG = TarjetaFragment.class.getSimpleName();
+    String name = new String("Fragment Tarjeta");
+
     public TarjetaFragment() {
 
     }
@@ -49,16 +57,16 @@ public class TarjetaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.recyclerview_fragment, container, false);
-        //tarjetas = this.getAllAccounts();
         recyclerView = view.findViewById(R.id.recyclerView);
         layoutManager = new LinearLayoutManager(getActivity());
-        //adapter = new TarjetaAdapter(tarjetas, R.layout.rv_tarjetas);
 
         swipe = view.findViewById(R.id.swiperefresh);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        //recyclerView.setAdapter(adapter);
+
+        AnalyticsApplication application = (AnalyticsApplication) getActivity().getApplication();
+        mTracker = application.getDefaultTracker();
 
         RequestQueue requestQueue = Volley.newRequestQueue(container.getContext());
         String url = "http://192.168.8.102/Volley/CardList.php";
@@ -89,15 +97,22 @@ public class TarjetaFragment extends Fragment {
                     public void run() {
                         swipe.setRefreshing(false);
                     }
-                }, 3000);
+                }, 2500);
             }
         });
 
-        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light);
 
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "Setting screen name: "+name);
+        mTracker.setScreenName(name);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
 
     /*private List<Tarjeta> getAllAccounts() {
         return new ArrayList<Tarjeta>() {

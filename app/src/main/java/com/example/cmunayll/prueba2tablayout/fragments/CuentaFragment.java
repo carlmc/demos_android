@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +17,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.cmunayll.prueba2tablayout.AnalyticsApplication;
 import com.example.cmunayll.prueba2tablayout.R;
 import com.example.cmunayll.prueba2tablayout.adapters.CuentaAdapter;
 import com.example.cmunayll.prueba2tablayout.models.Cuenta;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -38,6 +42,10 @@ public class CuentaFragment extends Fragment {
     private List<Cuenta> cuentas;
     private CuentaAdapter adapter;
 
+    private Tracker mTracker;
+    private static final String TAG = CuentaFragment.class.getSimpleName();
+    String name = new String("Fragment Cuenta");
+
     public CuentaFragment() {
 
     }
@@ -53,6 +61,9 @@ public class CuentaFragment extends Fragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
+
+        AnalyticsApplication application = (AnalyticsApplication) getActivity().getApplication();
+        mTracker = application.getDefaultTracker();
 
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         String url = "http://192.168.8.102/Volley/AccountList.php";
@@ -82,17 +93,24 @@ public class CuentaFragment extends Fragment {
                     public void run() {
                         swipe.setRefreshing(false);
                     }
-                }, 3000);
+                }, 2500);
             }
         });
 
-        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light);
 
         //cuentas = this.getAllAccounts();
 
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "Setting screen name: "+name);
+        mTracker.setScreenName(name);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
 
     /*private List<Cuenta> getAllAccounts() {
         return new ArrayList<Cuenta>() {{
