@@ -47,7 +47,7 @@ public class CreditoFragment extends Fragment {
 
     private Tracker mTracker;
     private static final String TAG = CreditoFragment.class.getSimpleName();
-    String name = new String("Fragment Credito");
+    String name = "Fragment Credito";
 
     public CreditoFragment() {
 

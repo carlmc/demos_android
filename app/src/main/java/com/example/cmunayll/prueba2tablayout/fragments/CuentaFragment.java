@@ -44,7 +44,7 @@ public class CuentaFragment extends Fragment {
 
     private Tracker mTracker;
     private static final String TAG = CuentaFragment.class.getSimpleName();
-    String name = new String("Fragment Cuenta");
+    String name = "Fragment Cuenta";
 
     public CuentaFragment() {
 

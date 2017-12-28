@@ -48,7 +48,7 @@ public class TarjetaFragment extends Fragment {
 
     private Tracker mTracker;
     private static final String TAG = TarjetaFragment.class.getSimpleName();
-    String name = new String("Fragment Tarjeta");
+    String name = "Fragment Tarjeta";
 
     public TarjetaFragment() {
 
