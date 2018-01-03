@@ -1,12 +1,20 @@
 package com.example.cmunayll.prueba2tablayout;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.cmunayll.prueba2tablayout.adapters.AdapterFragment;
+
+import static com.example.cmunayll.prueba2tablayout.WifiBroadcastReceiver.IS_NETWORK_AVAILABLE;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,6 +65,17 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        IntentFilter intentFilter = new IntentFilter(WifiBroadcastReceiver.NETWORK_AVAILABLE);
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                boolean isNetworkAvailable = intent.getBooleanExtra(IS_NETWORK_AVAILABLE, false);
+                String networkStatus = isNetworkAvailable ? "conectado" : "desconectado";
+
+                Snackbar.make(findViewById(R.id.activity_main), "Estado WIFI: "+networkStatus, Snackbar.LENGTH_LONG).show();
+            }
+        }, intentFilter);
 
     }
 

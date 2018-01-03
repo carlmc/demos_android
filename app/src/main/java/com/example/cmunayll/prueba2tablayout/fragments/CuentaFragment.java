@@ -17,7 +17,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.cmunayll.prueba2tablayout.R;
-import com.example.cmunayll.prueba2tablayout.WifiBroadcastReceiver;
 import com.example.cmunayll.prueba2tablayout.adapters.CuentaAdapter;
 import com.example.cmunayll.prueba2tablayout.models.Cuenta;
 import com.google.gson.Gson;
@@ -72,7 +71,7 @@ public class CuentaFragment extends Fragment {
                     public void run() {
                         swipe.setRefreshing(false);
                     }
-                }, 2000);
+                }, 1500);
                 llenarVolley();
             }
         });

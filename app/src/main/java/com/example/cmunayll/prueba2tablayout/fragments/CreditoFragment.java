@@ -72,7 +72,7 @@ public class CreditoFragment extends Fragment {
                     public void run() {
                         swipe.setRefreshing(false);
                     }
-                }, 2000);
+                }, 1500);
                 bindVolley();
             }
         });
