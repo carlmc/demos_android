@@ -94,6 +94,7 @@ public class CuentaFragment extends Fragment {
                         swipe.setRefreshing(false);
                     }
                 }, 2500);
+                mTracker.send(new HitBuilders.EventBuilder().setCategory("Action").setAction("Swipe").build());
             }
         });
 
