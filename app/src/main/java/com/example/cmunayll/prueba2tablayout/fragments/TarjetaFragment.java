@@ -63,38 +63,6 @@ public class TarjetaFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
-        AnalyticsApplication application = (AnalyticsApplication) getActivity().getApplication();
-        mTracker = application.getDefaultTracker();
-
-        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipe.setRefreshing(true);
-                (new Handler()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipe.setRefreshing(false);
-                    }
-                }, 1500);
-                llenaRetrofit();
-                mTracker.send(new HitBuilders.EventBuilder().setCategory("Action").setAction("Swipe").build());
-            }
-        });
-
-        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light);
-
-        return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i(TAG, "Setting screen name: "+name);
-        mTracker.setScreenName(name);
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-    }
-
-    private void llenaRetrofit() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://192.168.8.102").addConverterFactory(GsonConverterFactory.create()).build();
         TarjetaInterface requestInterface = retrofit.create(TarjetaInterface.class);
         Call<JSONTarjeta> call = requestInterface.getJSON();
@@ -113,7 +81,37 @@ public class TarjetaFragment extends Fragment {
             }
         });
 
+        AnalyticsApplication application = (AnalyticsApplication) getActivity().getApplication();
+        mTracker = application.getDefaultTracker();
+
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipe.setRefreshing(true);
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipe.setRefreshing(false);
+                    }
+                }, 1500);
+
+                mTracker.send(new HitBuilders.EventBuilder().setCategory("Action").setAction("Swipe").build());
+            }
+        });
+
+        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light);
+
+        return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "Setting screen name: "+name);
+        mTracker.setScreenName(name);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
+
 
     /*private List<Tarjeta> getAllAccounts() {
         return new ArrayList<Tarjeta>() {

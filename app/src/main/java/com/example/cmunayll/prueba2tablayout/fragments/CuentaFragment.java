@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import com.example.cmunayll.prueba2tablayout.AnalyticsApplication;
 import com.example.cmunayll.prueba2tablayout.interfaces.CuentaInterface;
 import com.example.cmunayll.prueba2tablayout.jsons.JSONCuenta;
@@ -19,12 +18,8 @@ import com.example.cmunayll.prueba2tablayout.R;
 import com.example.cmunayll.prueba2tablayout.adapters.CuentaAdapter;
 import com.example.cmunayll.prueba2tablayout.models.Cuenta;
 
-
-
-
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,8 +63,28 @@ public class CuentaFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://192.168.8.102").addConverterFactory(GsonConverterFactory.create()).build();
+        CuentaInterface requestInterface = retrofit.create(CuentaInterface.class);
+        Call<JSONCuenta> call = requestInterface.getJSON();
+        call.enqueue(new Callback<JSONCuenta>() {
+            @Override
+            public void onResponse(Call<JSONCuenta> call, retrofit2.Response<JSONCuenta> response) {
+                JSONCuenta jsonResponse = response.body();
+                cuentas = new ArrayList<>(Arrays.asList(jsonResponse.getCuenta()));
+                adapter = new CuentaAdapter(cuentas, R.layout.rv_cuentas);
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<JSONCuenta> call, Throwable t) {
+                Log.d("Error", t.getMessage());
+            }
+        });
+
         AnalyticsApplication application = (AnalyticsApplication) getActivity().getApplication();
         mTracker = application.getDefaultTracker();
+
+
 
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -81,7 +96,6 @@ public class CuentaFragment extends Fragment {
                         swipe.setRefreshing(false);
                     }
                 }, 1500);
-                llenarRetrofit();
                 mTracker.send(new HitBuilders.EventBuilder().setCategory("Action").setAction("Swipe").build());
             }
         });
@@ -102,26 +116,6 @@ public class CuentaFragment extends Fragment {
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
-    private void llenarRetrofit() {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://192.168.8.102").addConverterFactory(GsonConverterFactory.create()).build();
-        CuentaInterface requestInterface = retrofit.create(CuentaInterface.class);
-        Call<JSONCuenta> call = requestInterface.getJSON();
-        call.enqueue(new Callback<JSONCuenta>() {
-            @Override
-            public void onResponse(Call<JSONCuenta> call, retrofit2.Response<JSONCuenta> response) {
-                JSONCuenta jsonResponse = response.body();
-                cuentas = new ArrayList<>(Arrays.asList(jsonResponse.getCuenta()));
-                adapter = new CuentaAdapter(cuentas, R.layout.rv_cuentas);
-                recyclerView.setAdapter(adapter);
-            }
-
-            @Override
-            public void onFailure(Call<JSONCuenta> call, Throwable t) {
-                Log.d("Error", t.getMessage());
-            }
-        });
-
-    }
 
 
 
