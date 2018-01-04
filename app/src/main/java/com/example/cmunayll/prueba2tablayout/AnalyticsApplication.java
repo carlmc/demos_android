@@ -1,9 +1,13 @@
 package com.example.cmunayll.prueba2tablayout;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.IntentFilter;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
+
+import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
 
 /**
  * Created by cmunayll on 27/12/2017.
@@ -11,6 +15,7 @@ import com.google.android.gms.analytics.Tracker;
 
 public class AnalyticsApplication extends Application {
     private Tracker mTracker;
+    private static final String WIFI_STATE = "android.net.wifi.WIFI_STATE_CHANGED";
 
     /**
      * Gets the default {@link Tracker} for this {@link Application}.
@@ -23,5 +28,17 @@ public class AnalyticsApplication extends Application {
             mTracker = analytics.newTracker("UA-111675132-1");
         }
         return mTracker;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        registerForNetworkChangeEvents(this);
+    }
+
+    public static void registerForNetworkChangeEvents(final Context context) {
+        WifiBroadcastReceiver wifiBroadcastReceiver = new WifiBroadcastReceiver();
+        context.registerReceiver(wifiBroadcastReceiver, new IntentFilter(CONNECTIVITY_ACTION));
+        context.registerReceiver(wifiBroadcastReceiver, new IntentFilter(WIFI_STATE));
     }
 }

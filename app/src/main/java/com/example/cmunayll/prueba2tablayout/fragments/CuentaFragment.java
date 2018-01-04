@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import com.example.cmunayll.prueba2tablayout.AnalyticsApplication;
 import com.example.cmunayll.prueba2tablayout.interfaces.CuentaInterface;
 import com.example.cmunayll.prueba2tablayout.jsons.JSONCuenta;
 import com.example.cmunayll.prueba2tablayout.R;
@@ -20,8 +21,10 @@ import com.example.cmunayll.prueba2tablayout.models.Cuenta;
 
 
 
+
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +47,7 @@ public class CuentaFragment extends Fragment {
     private ArrayList<Cuenta> cuentas;
     private CuentaAdapter adapter;
 
+
     private Tracker mTracker;
     private static final String TAG = CuentaFragment.class.getSimpleName();
     String name = "Fragment Cuenta";
@@ -64,8 +68,41 @@ public class CuentaFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
+        AnalyticsApplication application = (AnalyticsApplication) getActivity().getApplication();
+        mTracker = application.getDefaultTracker();
+
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipe.setRefreshing(true);
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipe.setRefreshing(false);
+                    }
+                }, 1500);
+                llenarRetrofit();
+                mTracker.send(new HitBuilders.EventBuilder().setCategory("Action").setAction("Swipe").build());
+            }
+        });
+
+        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light);
+
+        //cuentas = this.getAllAccounts();
+
+        return view;
+    }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "Setting screen name: "+name);
+        mTracker.setScreenName(name);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
+
+    private void llenarRetrofit() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://192.168.8.102").addConverterFactory(GsonConverterFactory.create()).build();
         CuentaInterface requestInterface = retrofit.create(CuentaInterface.class);
         Call<JSONCuenta> call = requestInterface.getJSON();
@@ -84,34 +121,9 @@ public class CuentaFragment extends Fragment {
             }
         });
 
-        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipe.setRefreshing(true);
-                (new Handler()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipe.setRefreshing(false);
-                    }
-                }, 2500);
-                mTracker.send(new HitBuilders.EventBuilder().setCategory("Action").setAction("Swipe").build());
-            }
-        });
-
-        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light);
-
-        //cuentas = this.getAllAccounts();
-
-        return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i(TAG, "Setting screen name: "+name);
-        mTracker.setScreenName(name);
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-    }
+
 
     /*private List<Cuenta> getAllAccounts() {
         return new ArrayList<Cuenta>() {{

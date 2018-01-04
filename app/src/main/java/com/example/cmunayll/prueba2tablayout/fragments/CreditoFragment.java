@@ -11,30 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.cmunayll.prueba2tablayout.AnalyticsApplication;
 import com.example.cmunayll.prueba2tablayout.R;
 import com.example.cmunayll.prueba2tablayout.adapters.CreditoAdapter;
-import com.example.cmunayll.prueba2tablayout.adapters.TarjetaAdapter;
+
 import com.example.cmunayll.prueba2tablayout.interfaces.CreditoInterface;
-import com.example.cmunayll.prueba2tablayout.interfaces.TarjetaInterface;
 import com.example.cmunayll.prueba2tablayout.jsons.JSONCredito;
-import com.example.cmunayll.prueba2tablayout.jsons.JSONTarjeta;
 import com.example.cmunayll.prueba2tablayout.models.Credito;
-import com.example.cmunayll.prueba2tablayout.models.Tarjeta;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -76,25 +64,35 @@ public class CreditoFragment extends Fragment {
         AnalyticsApplication application = (AnalyticsApplication) getActivity().getApplication();
         mTracker = application.getDefaultTracker();
 
-        /*RequestQueue requestQueue = Volley.newRequestQueue(container.getContext());
-        String url = "http://192.168.8.102/Volley/CredproductList.php";
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onResponse(String response) {
-                GsonBuilder builder = new GsonBuilder();
-                Gson mGson = builder.create();
-                creditos = Arrays.asList(mGson.fromJson(response, Credito[].class));
-                adapter = new CreditoAdapter(creditos, R.layout.rv_creditos);
-                recyclerView.setAdapter(adapter);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
+            public void onRefresh() {
+                swipe.setRefreshing(true);
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipe.setRefreshing(false);
+                    }
+                }, 1500);
+                bindRetrofit();
+                mTracker.send(new HitBuilders.EventBuilder().setCategory("Action").setAction("Swipe").build());
             }
         });
 
-        requestQueue.add(request);*/
+        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light);
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "Setting screen name: "+name);
+        mTracker.setScreenName(name);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
+
+    private void bindRetrofit() {
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://192.168.8.102").addConverterFactory(GsonConverterFactory.create()).build();
         CreditoInterface requestInterface = retrofit.create(CreditoInterface.class);
@@ -114,33 +112,7 @@ public class CreditoFragment extends Fragment {
             }
         });
 
-        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipe.setRefreshing(true);
-                (new Handler()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipe.setRefreshing(false);
-                    }
-                }, 2500);
-            }
-        });
-
-        swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light);
-
-        return view;
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i(TAG, "Setting screen name: "+name);
-        mTracker.setScreenName(name);
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-    }
-
-
     /*private List<Credito> getAllAccounts() {
         return new ArrayList<Credito>() {
             {
