@@ -5,19 +5,28 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.cmunayll.prueba2tablayout.adapters.AdapterFragment;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 public class MainActivity extends AppCompatActivity {
 
     ViewPager viewPager;
     TabLayout tabLayout;
+    private Tracker mTracker;
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private String name = "Analytics";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        mTracker = application.getDefaultTracker();
 
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
@@ -45,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
+                //Tracker t = ((AnalyticsApplication) getApplication()).getDefaultTracker();
+                Log.i(TAG, "Setting screen name: "+name);
+                mTracker.send(new HitBuilders.EventBuilder().setCategory("Action").setAction("Share").build());
+                //mTracker.setScreenName(name);
+                //mTracker.send(new HitBuilders.ScreenViewBuilder().build());
             }
 
             @Override
@@ -57,6 +71,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "Screen name: "+name);
+        mTracker.setScreenName(name);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 }

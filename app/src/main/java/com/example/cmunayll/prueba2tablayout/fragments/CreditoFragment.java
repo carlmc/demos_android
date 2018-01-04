@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.cmunayll.prueba2tablayout.AnalyticsApplication;
 import com.example.cmunayll.prueba2tablayout.R;
 import com.example.cmunayll.prueba2tablayout.adapters.CreditoAdapter;
 import com.example.cmunayll.prueba2tablayout.adapters.TarjetaAdapter;
@@ -26,6 +27,8 @@ import com.example.cmunayll.prueba2tablayout.jsons.JSONCredito;
 import com.example.cmunayll.prueba2tablayout.jsons.JSONTarjeta;
 import com.example.cmunayll.prueba2tablayout.models.Credito;
 import com.example.cmunayll.prueba2tablayout.models.Tarjeta;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -51,6 +54,10 @@ public class CreditoFragment extends Fragment {
     private ArrayList<Credito> creditos;
     private CreditoAdapter adapter;
 
+    private Tracker mTracker;
+    private static final String TAG = CreditoFragment.class.getSimpleName();
+    String name = "Fragment Credito";
+
     public CreditoFragment() {
 
     }
@@ -58,16 +65,16 @@ public class CreditoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.recyclerview_fragment, container, false);
-        //creditos = this.getAllAccounts();
         recyclerView = view.findViewById(R.id.recyclerView);
         layoutManager = new LinearLayoutManager(getActivity());
-        //adapter = new CreditoAdapter(creditos, R.layout.rv_creditos);
 
         swipe = view.findViewById(R.id.swiperefresh);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        //recyclerView.setAdapter(adapter);
+
+        AnalyticsApplication application = (AnalyticsApplication) getActivity().getApplication();
+        mTracker = application.getDefaultTracker();
 
         /*RequestQueue requestQueue = Volley.newRequestQueue(container.getContext());
         String url = "http://192.168.8.102/Volley/CredproductList.php";
@@ -116,13 +123,21 @@ public class CreditoFragment extends Fragment {
                     public void run() {
                         swipe.setRefreshing(false);
                     }
-                }, 3000);
+                }, 2500);
             }
         });
 
         swipe.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "Setting screen name: "+name);
+        mTracker.setScreenName(name);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
 

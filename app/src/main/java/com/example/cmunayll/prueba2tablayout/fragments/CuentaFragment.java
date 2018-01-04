@@ -11,11 +11,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+
 import com.example.cmunayll.prueba2tablayout.interfaces.CuentaInterface;
 import com.example.cmunayll.prueba2tablayout.jsons.JSONCuenta;
 import com.example.cmunayll.prueba2tablayout.R;
 import com.example.cmunayll.prueba2tablayout.adapters.CuentaAdapter;
 import com.example.cmunayll.prueba2tablayout.models.Cuenta;
+
+
+
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +44,10 @@ public class CuentaFragment extends Fragment {
     private ArrayList<Cuenta> cuentas;
     private CuentaAdapter adapter;
 
+    private Tracker mTracker;
+    private static final String TAG = CuentaFragment.class.getSimpleName();
+    String name = "Fragment Cuenta";
+
     public CuentaFragment() {
 
     }
@@ -54,24 +64,7 @@ public class CuentaFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
-        /*RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String url = "http://192.168.8.102/Volley/AccountList.php";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                GsonBuilder builder = new GsonBuilder();
-                Gson mGson = builder.create();
-                cuentas = Arrays.asList(mGson.fromJson(response, Cuenta[].class));
-                adapter = new CuentaAdapter(cuentas, R.layout.rv_cuentas);
-                recyclerView.setAdapter(adapter);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
 
-            }
-        });
-        requestQueue.add(stringRequest);*/
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://192.168.8.102").addConverterFactory(GsonConverterFactory.create()).build();
         CuentaInterface requestInterface = retrofit.create(CuentaInterface.class);
@@ -100,7 +93,8 @@ public class CuentaFragment extends Fragment {
                     public void run() {
                         swipe.setRefreshing(false);
                     }
-                }, 3000);
+                }, 2500);
+                mTracker.send(new HitBuilders.EventBuilder().setCategory("Action").setAction("Swipe").build());
             }
         });
 
@@ -111,6 +105,13 @@ public class CuentaFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "Setting screen name: "+name);
+        mTracker.setScreenName(name);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
 
     /*private List<Cuenta> getAllAccounts() {
         return new ArrayList<Cuenta>() {{
